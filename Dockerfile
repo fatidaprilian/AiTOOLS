@@ -15,9 +15,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install ekstensi PHP yang dibutuhkan oleh Laravel
 RUN docker-php-source extract \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo tokenizer ctype xml dom \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo ctype xml dom \
     && docker-php-source delete
-
 # Aktifkan modul rewrite Apache untuk URL cantik Laravel
 RUN a2enmod rewrite
 
