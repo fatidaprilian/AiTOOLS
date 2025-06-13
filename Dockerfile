@@ -1,5 +1,5 @@
 # Gunakan base image yang sudah mencakup Nginx dan PHP-FPM
-FROM richarvey/nginx-php-fpm:2.2.0
+FROM richarvey/nginx-php-fpm:latest
 
 # Salin file composer terlebih dahulu untuk caching
 COPY composer.json composer.lock /var/www/html/
