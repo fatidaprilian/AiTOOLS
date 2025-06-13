@@ -5,7 +5,8 @@ WORKDIR /app
 COPY database/ database/
 COPY composer.json composer.json
 COPY composer.lock composer.lock
-RUN composer install \
+RUN --mount=type=cache,target=/root/.composer/cache \
+    composer install \
     --ignore-platform-reqs \
     --no-interaction \
     --no-plugins \
