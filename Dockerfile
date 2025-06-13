@@ -5,8 +5,8 @@ WORKDIR /app
 COPY database/ database/
 COPY composer.json composer.json
 COPY composer.lock composer.lock
-# Perbaikan sintaks cache mount ada di baris berikut:
-RUN --mount=type=cache,id=composer_cache,target=/root/.composer/cache \
+# Perbaikan sintaks cache mount dengan cache key prefix untuk Railway:
+RUN --mount=type=cache,id=cache-composer_cache,target=/root/.composer/cache \
     composer install \
     --ignore-platform-reqs \
     --no-interaction \
