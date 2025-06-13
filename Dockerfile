@@ -26,4 +26,4 @@ RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html/storage
 
 # Expose port 80
-EXPOSE 80git add .
+EXPOSE 80
