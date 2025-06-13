@@ -1,7 +1,7 @@
-# Use PHP 8.2 with Apache
+# Gunakan image dasar PHP 8.2 dengan Apache
 FROM php:8.2-apache
 
-# Install system dependencies
+# Install dependensi sistem yang umum dibutuhkan
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,42 +13,39 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
+# Install ekstensi PHP yang dibutuhkan oleh Laravel
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Enable Apache rewrite module
+# Aktifkan modul rewrite Apache untuk URL cantik Laravel
 RUN a2enmod rewrite
 
-# Set working directory
+# Salin file konfigurasi Virtual Host kustom kita untuk Apache
+# Ini adalah pengganti perintah 'sed' yang kita hapus
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Tentukan direktori kerja di dalam kontainer
 WORKDIR /var/www/html
 
-# Install Composer
+# Install Composer (manajer paket PHP)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer files first (for better caching)
+# Salin file composer terlebih dahulu untuk memanfaatkan cache Docker
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+# Install dependensi PHP tanpa paket development
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist
 
-# Copy application files
+# Salin semua file aplikasi Laravel
 COPY . .
 
-# Complete composer installation
+# Buat autoload yang dioptimalkan untuk produksi
 RUN composer dump-autoload --no-dev --optimize
 
-# Set Apache document root to Laravel public folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Set permissions
+# Atur izin file dan folder agar bisa ditulis oleh server
 RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html/storage && \
-    chmod -R 755 /var/www/html/bootstrap/cache
+    chmod -R 775 /var/www/html/storage && \
+    chmod -R 775 /var/www/html/bootstrap/cache
 
-# Expose port 80
-EXPOSE 80
-
-# Start Apache
+# Perintah final untuk memulai server
+# Mengubah port Listen Apache ke port yang diberikan oleh Railway, lalu memulai server
 CMD sed -i -e "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf && apache2-foreground
