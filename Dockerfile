@@ -48,4 +48,4 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 # Perintah final untuk memulai server
 # Mengubah port Listen Apache ke port yang diberikan oleh Railway, lalu memulai server
-CMD sed -i -e "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf && apache2-foreground
+CMD sed -i -e "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf && sed -i -e "s/<VirtualHost \*:80>/<VirtualHost \*:${PORT}>/g" /etc/apache2/sites-available/000-default.conf && apache2-foreground
