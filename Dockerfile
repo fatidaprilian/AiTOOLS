@@ -5,8 +5,8 @@ WORKDIR /app
 COPY database/ database/
 COPY composer.json composer.json
 COPY composer.lock composer.lock
-# Perbaikan sintaks cache mount dengan cache key prefix untuk Railway:
-RUN --mount=type=cache,id=cache-composer_cache,target=/root/.composer/cache \
+# Updated cache mount with Railway-specific format:
+RUN --mount=type=cache,id=cache-composer-vendor,target=/root/.composer/cache \
     composer install \
     --ignore-platform-reqs \
     --no-interaction \
@@ -20,7 +20,8 @@ RUN --mount=type=cache,id=cache-composer_cache,target=/root/.composer/cache \
 FROM richarvey/nginx-php-fpm:latest
 
 # Instal ekstensi PHP yang umum dibutuhkan Laravel
-RUN apt-get update && apt-get install -y \
+RUN --mount=type=cache,id=cache-apt-packages,target=/var/cache/apt \
+    apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     && docker-php-ext-install pdo pdo_mysql zip
