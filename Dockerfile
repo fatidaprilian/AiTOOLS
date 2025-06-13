@@ -14,7 +14,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ekstensi PHP yang dibutuhkan oleh Laravel
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo tokenizer ctype xml dom
+RUN docker-php-source extract \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo tokenizer ctype xml dom \
+    && docker-php-source delete
 
 # Aktifkan modul rewrite Apache untuk URL cantik Laravel
 RUN a2enmod rewrite
@@ -48,4 +50,4 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 # Perintah final untuk memulai server
 # Mengubah port Listen Apache ke port yang diberikan oleh Railway, lalu memulai server
-CMD ["sleep", "infinity"]
+CMD sed -i -e "s/Listen 80/Listen 8080/g" /etc/apache2/ports.conf && sed -i -e "s/<VirtualHost \*:80>/<VirtualHost \*:8080>/g" /etc/apache2/sites-available/000-default.conf && apache2-foreground
