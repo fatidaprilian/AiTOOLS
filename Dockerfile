@@ -5,7 +5,8 @@ WORKDIR /app
 COPY database/ database/
 COPY composer.json composer.json
 COPY composer.lock composer.lock
-RUN --mount=type=cache,target=/root/.composer/cache \
+# Perbaikan sintaks cache mount ada di baris berikut:
+RUN --mount=type=cache,id=composer_cache,target=/root/.composer/cache \
     composer install \
     --ignore-platform-reqs \
     --no-interaction \
