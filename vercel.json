@@ -8,19 +8,19 @@
     },
     "routes": [
         {
-            "src": "/build/assets/(.)",
+            "src": "/build/assets/(.*)",
             "dest": "/build/assets/$1"
         },
         {
-            "src": "/images/(.)",
+            "src": "/images/(.*)",
             "dest": "/public/images/$1"
         },
         {
-            "src": "/(.\\.php)",
+            "src": "/(.*\\.php)",
             "dest": "/api/$1"
         },
         {
-            "src": "/(.)",
+            "src": "/(.*)",
             "dest": "/api/index.php"
         }
     ]
