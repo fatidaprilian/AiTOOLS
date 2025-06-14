@@ -70,7 +70,7 @@
             <div class="flex flex-col h-full">
                 {{-- Logo & Nama Admin Panel --}}
                 <div class="flex items-center justify-center sm:justify-start gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <img alt="AlinAja Logo" class="w-8 h-8 sm:w-10 sm:h-10" src="https://i.ibb.co/FqgHX6c3/Blue-Modern-AI-Technology-Logo.png"/>
+<img alt="AlinAja Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-md" src="https://i.ibb.co/FqgHX6c3/Blue-Modern-AI-Technology-Logo.png"/>
                     <div>
                         <span class="font-extrabold text-lg select-none text-gray-800 dark:text-white">AlinAja</span>
                         <span class="block text-xs text-blue-600 dark:text-blue-400 font-semibold">Admin Panel</span>
