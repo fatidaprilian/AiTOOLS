@@ -1,4 +1,5 @@
 <?php
+<?php
 
 namespace App\Http\Controllers;
 
@@ -28,12 +29,18 @@ class AdminDashboardController extends Controller
             ->orderBy('date', 'asc')
             ->pluck('total', 'date'); // Hasil: ['2024-05-20' => 10, '2024-05-21' => 15]
 
+        // Log penggunaan terbaru (10 terakhir) - TAMBAHAN BARU
+        $recentLogs = ToolUsageLog::latest()
+            ->take(10)
+            ->get();
+
         return view('admin.dashboard', compact(
             'totalUsage',
             'successfulUsage',
             'failedUsage',
             'usageByTool',
-            'dailyUsage'
+            'dailyUsage',
+            'recentLogs' // TAMBAHAN BARU
         ));
     }
 }
