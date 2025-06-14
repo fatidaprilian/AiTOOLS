@@ -84,10 +84,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 // Group untuk route admin
-Route::middleware(['auth', 'admin']) // Kita akan kembalikan ini nanti, sekarang fokus ke nama rute
+Route::middleware(['auth', 'admin'])
     ->prefix('admin')
-    ->name('admin.') // <-- Ini akan menambahkan prefix 'admin.' ke semua nama rute di dalam grup
+    ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
-            ->name('dashboard'); // <-- Ini membuat nama rute lengkapnya menjadi 'admin.dashboard'
+            ->name('dashboard');
+
+        // Routes untuk manajemen user
+        // Ganti dari UserController ke AdminUserController
+        Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class);
     });
