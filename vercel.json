@@ -1,35 +1,36 @@
 {
-  "version": 2,
-
-  "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.7.3"
-    }
-  },
-  "installCommand": "composer install --no-dev --prefer-dist",
-  "buildCommand": "php artisan migrate --force && php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache",
-  "outputDirectory": "public",
-  "build": {
+    "version": 2,
+    "framework": null,
+    "buildCommand": "php migrate.php",
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.3"
+        }
+    },
+    "routes": [
+        {
+            "src": "/build/assets/(.*)",
+            "dest": "/build/assets/$1"
+        },
+        {
+            "src": "/images/(.*)",
+            "dest": "/public/images/$1"
+        },
+        {
+            "src": "/(.*\\.php)",
+            "dest": "/api/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
     "env": {
-      "PHP_VERSION": "8.2"
+        "DATABASE_URL": "@database_url",
+        "DB_HOST": "@db_host",
+        "DB_PORT": "@db_port",
+        "DB_NAME": "@db_name",
+        "DB_USER": "@db_user",
+        "DB_PASSWORD": "@db_password"
     }
-  },
-  "routes": [
-    {
-      "src": "/build/assets/(.*)",
-      "dest": "/build/assets/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/public/images/$1"
-    },
-    {
-      "src": "/(.*\\.php)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
-  ]
 }
