@@ -1,18 +1,17 @@
 {
   "version": 2,
-  "framework": null,
+
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.3"
     }
   },
-  
+  "installCommand": "composer install --no-dev --prefer-dist",
   "buildCommand": "php artisan migrate --force && php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache",
-  "outputDirectory": "public", 
-
+  "outputDirectory": "public",
   "build": {
     "env": {
-      "PHP_VERSION": "8.2" 
+      "PHP_VERSION": "8.2"
     }
   },
   "routes": [
