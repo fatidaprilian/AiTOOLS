@@ -6,12 +6,14 @@
       "runtime": "vercel-php@0.7.3"
     }
   },
+  
+  "buildCommand": "php artisan migrate --force && php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache",
+  "outputDirectory": "public", 
+
   "build": {
     "env": {
-      "PHP_VERSION": "8.2"
-    },
-    "buildCommand": "php artisan migrate --force && php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache",
-    "outputDirectory": "public"
+      "PHP_VERSION": "8.2" 
+    }
   },
   "routes": [
     {
