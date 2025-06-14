@@ -1,7 +1,6 @@
 {
     "version": 2,
     "framework": null,
-    "buildCommand": "php migrate.php",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.3"
@@ -24,13 +23,5 @@
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ],
-    "env": {
-        "DATABASE_URL": "@database_url",
-        "DB_HOST": "@db_host",
-        "DB_PORT": "@db_port",
-        "DB_NAME": "@db_name",
-        "DB_USER": "@db_user",
-        "DB_PASSWORD": "@db_password"
-    }
+    ]
 }
