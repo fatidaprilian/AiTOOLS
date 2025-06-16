@@ -55,41 +55,41 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('word_file', uploadedFile);
 
         try {
-            // Gunakan variabel JavaScript yang didefinisikan di file Blade
-            const response = await fetch(convertWordToPdfProcessUrl, { //
+            const response = await fetch(convertWordToPdfProcessUrl, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
                 body: formData,
             });
 
             loadingIndicator.classList.add('hidden');
-            const contentType = response.headers.get('content-type') || '';
+            const responseData = await response.json(); // <-- Baca respons sebagai JSON
 
-            if (response.ok && contentType.includes('application/pdf')) {
-                // Sukses PDF
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                downloadLink.href = url;
-                downloadLink.download = uploadedFile.name.replace(/\.(doc|docx)$/i, '.pdf');
+            if (response.ok && responseData.status === 'success') { // <-- Periksa status di dalam JSON
+                const pdfUrl = responseData.pdf_url; // <-- Ambil URL PDF dari JSON
+                const filename = responseData.filename; // <-- Ambil nama file dari JSON
+
+                downloadLink.href = pdfUrl; // <-- Set href ke URL CloudConvert
+                downloadLink.download = filename; // <-- Set nama download
+                
+                // Opsional: Anda mungkin ingin membuat unduhan "blob" jika PDF perlu diproses oleh JS
+                // Tetapi untuk unduhan langsung, cukup set href ke URL CloudConvert.
+                // Jika ingin membuat blob lokal (misal untuk fitur preview atau agar tidak redirect user):
+                /*
+                const pdfResponse = await fetch(pdfUrl);
+                if (!pdfResponse.ok) throw new Error('Gagal mengunduh PDF dari CloudConvert.');
+                const blob = await pdfResponse.blob();
+                const localUrl = window.URL.createObjectURL(blob);
+                downloadLink.href = localUrl;
+                downloadLink.download = filename;
+                */
+
                 resultTitle.textContent = 'Konversi Berhasil!';
                 resultMessage.textContent = 'File PDF Anda siap diunduh.';
                 resultMessage.classList.remove('hidden');
                 downloadLink.classList.remove('hidden');
             } else {
-                // Baca response sebagai text
-                const text = await response.text();
-                let errorMessage = 'Gagal mengkonversi dokumen.';
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMessage = errorData.message || errorMessage;
-                } catch {
-                    // HTML error (misal, "<!DOCTYPE html..."), tampilkan sebagian
-                    if (text.startsWith('<!DOCTYPE') || text.startsWith('<html')) {
-                        errorMessage = 'Server error: ' + text.substring(0, 100) + ' ...';
-                    } else {
-                        errorMessage = text;
-                    }
-                }
+                // Penanganan error jika status bukan 'success' atau respons HTTP bukan OK
+                const errorMessage = responseData.message || 'Gagal mengkonversi dokumen.';
                 throw new Error(`Gagal (${response.status}): ${errorMessage}`);
             }
         } catch (error) {
