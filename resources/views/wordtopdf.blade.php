@@ -41,5 +41,9 @@
 @endsection
 
 @push('scripts')
+    <script>
+        // Define a global (or scoped) JavaScript variable with the route URL
+        const convertWordToPdfProcessUrl = "{{ route('wordtopdf.process') }}"; //
+    </script>
     @vite('resources/js/word-to-pdf.js')
 @endpush

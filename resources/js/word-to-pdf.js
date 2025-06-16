@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('word_file', uploadedFile);
 
         try {
-            const response = await fetch("{{ route('wordtopdf.process') }}", {
+            // Gunakan variabel JavaScript yang didefinisikan di file Blade
+            const response = await fetch(convertWordToPdfProcessUrl, { //
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
                 body: formData,
