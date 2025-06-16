@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (downloadLink.href && downloadLink.href.startsWith('blob:')) {
             window.URL.revokeObjectURL(downloadLink.href);
         }
-        uploadInput.value = ''; 
+        uploadInput.value = '';
         uploadedFile = null;
         fileNameDisplay.textContent = 'Belum ada file dipilih';
-        convertButton.disabled = true; 
+        convertButton.disabled = true;
         resultSection.classList.add('hidden');
     }
 
