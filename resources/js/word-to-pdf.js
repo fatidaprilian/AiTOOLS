@@ -62,24 +62,34 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             loadingIndicator.classList.add('hidden');
+            const contentType = response.headers.get('content-type') || '';
 
-            if (response.ok) {
+            if (response.ok && contentType.includes('application/pdf')) {
+                // Sukses PDF
                 const blob = await response.blob();
-                if (blob.type.toLowerCase().includes("application/pdf")) {
-                    const url = window.URL.createObjectURL(blob);
-                    downloadLink.href = url;
-                    downloadLink.download = uploadedFile.name.replace(/\.(doc|docx)$/i, '.pdf');
-                    resultTitle.textContent = 'Konversi Berhasil!';
-                    resultMessage.textContent = 'File PDF Anda siap diunduh.';
-                    resultMessage.classList.remove('hidden');
-                    downloadLink.classList.remove('hidden');
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Respons dari server bukan PDF.');
-                }
+                const url = window.URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download = uploadedFile.name.replace(/\.(doc|docx)$/i, '.pdf');
+                resultTitle.textContent = 'Konversi Berhasil!';
+                resultMessage.textContent = 'File PDF Anda siap diunduh.';
+                resultMessage.classList.remove('hidden');
+                downloadLink.classList.remove('hidden');
             } else {
-                const errorData = await response.json();
-                throw new Error(`Gagal (${response.status}): ${errorData.message || 'Error server.'}`);
+                // Baca response sebagai text
+                const text = await response.text();
+                let errorMessage = 'Gagal mengkonversi dokumen.';
+                try {
+                    const errorData = JSON.parse(text);
+                    errorMessage = errorData.message || errorMessage;
+                } catch {
+                    // HTML error (misal, "<!DOCTYPE html..."), tampilkan sebagian
+                    if (text.startsWith('<!DOCTYPE') || text.startsWith('<html')) {
+                        errorMessage = 'Server error: ' + text.substring(0, 100) + ' ...';
+                    } else {
+                        errorMessage = text;
+                    }
+                }
+                throw new Error(`Gagal (${response.status}): ${errorMessage}`);
             }
         } catch (error) {
             resultTitle.textContent = 'Gagal Konversi';
